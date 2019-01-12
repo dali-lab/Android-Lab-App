@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">DALI Lab</string>
-    <string name="title_activity_login">LoginActivity</string>
     <string name="inDALITextInside">In DALI Lab</string>
     <string name="inDALITextOutside">In DALI Lab</string>
     <string name="noFoodLabel">No Food Tonight</string>
