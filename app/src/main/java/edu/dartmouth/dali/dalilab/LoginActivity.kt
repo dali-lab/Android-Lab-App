@@ -36,7 +36,6 @@ class LoginActivity : AppCompatActivity() {
             startLoading()
             DALIMember.loginSilently().onSuccess {
                 it?.let { transitionToMain() }
-                stopLoading()
             }.onFailure {
                 stopLoading()
             }

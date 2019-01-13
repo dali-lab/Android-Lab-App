@@ -9,7 +9,7 @@ package DALI
 /**
  * Controller for the whole DALI framework
  */
-public class DALIapi private constructor () {
+class DALIapi private constructor () {
     companion object {
         /// Configuration for the project
         private var uprotConfig: DALIConfig? = null

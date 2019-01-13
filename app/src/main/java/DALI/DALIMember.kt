@@ -11,7 +11,7 @@ import java.net.URL
 import java.util.concurrent.Executors
 import java.util.concurrent.CompletableFuture
 
-public class DALIMember private constructor() {
+class DALIMember private constructor() {
     companion object {
         /// Currently signed in member
         val current: DALIMember?

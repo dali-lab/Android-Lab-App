@@ -7,7 +7,7 @@ import java.net.URL
 
 private val PREFS_FILENAME = "edu.dartmouth.dali.apiConfig"
 
-public class DALIConfig(serverURLString: String, context: Context) {
+class DALIConfig(serverURLString: String, context: Context) {
     private val preferences: SharedPreferences
 
     internal val serverURL: URL

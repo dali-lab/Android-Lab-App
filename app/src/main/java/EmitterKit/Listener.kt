@@ -1,10 +1,10 @@
 package EmitterKit
 
-public interface Listener {
+interface Listener {
     var isListening: Boolean
 }
 
-public class EventListener<T> constructor(event: Event<T>, func: (T) -> Unit): Listener {
+class EventListener<T> constructor(event: Event<T>, func: (T) -> Unit): Listener {
     private val func: (T) -> Unit = func
     private val event: Event<T> = event
     override var isListening: Boolean = true
