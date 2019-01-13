@@ -1,25 +1,50 @@
 package edu.dartmouth.dali.dalilab
 
+import DALI.DALIConfig
+import DALI.DALIMember
+import DALI.DALIapi
+import DALI.guard
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.auth.api.signin.*
 import android.R.attr.data
+import android.view.View
+import android.widget.ProgressBar
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
+import io.github.vjames19.futures.jdk8.onFailure
+import io.github.vjames19.futures.jdk8.onSuccess
+import java.lang.Error
 
 class LoginActivity : AppCompatActivity() {
     val RC_SIGN_IN: Int = 1
-    lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
+    /// Do setup
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        val config = DALIConfig("https://dalilab-api.herokuapp.com", this)
+        DALIapi.configure(config)
+
+        if (DALIapi.canRememberLogin()) {
+            startLoading()
+            DALIMember.loginSilently().onSuccess {
+                it?.let { transitionToMain() }
+                stopLoading()
+            }.onFailure {
+                stopLoading()
+            }
+        }
+
+        val serverClientId = getString(R.string.server_client_id)
         var mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestServerAuthCode(serverClientId)
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
@@ -29,33 +54,79 @@ class LoginActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             signInButtonPressed()
         }
+
+        DALIMember.loggedInMemberChangedEvent.on {
+            it?.let {
+                this.transitionToMain()
+            }
+        }
     }
+
+    fun startLoading() {
+        val progress = this.findViewById<ProgressBar>(R.id.progressBar)
+        progress.visibility = View.VISIBLE
+
+        val signInButton = this.findViewById<SignInButton>(R.id.sign_in_button)
+        signInButton.isClickable = false
+        signInButton.alpha = 0.2.toFloat()
+    }
+
+    fun stopLoading() {
+        val progress = this.findViewById<ProgressBar>(R.id.progressBar)
+        progress.visibility = View.INVISIBLE
+
+        val signInButton = this.findViewById<SignInButton>(R.id.sign_in_button)
+        signInButton.isClickable = true
+        signInButton.alpha = 1.0.toFloat()
+    }
+
+    fun transitionToMain() {
+        val intent = MainActivity.newIntent(applicationContext)
+        startActivity(intent)
+    }
+
+    /// The activity completed
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            RC_SIGN_IN -> handleGoogleSignInResolution(data)
+        }
+    }
+
+    /// MARK: - Helpers
 
     private fun signInButtonPressed() {
         startActivityForResult(mGoogleSignInClient.signInIntent, RC_SIGN_IN)
     }
 
-    private fun handleGoogleSignInResolution(resultCode: Int, data: Intent?) {
-        System.out.println(data.toString())
-        System.out.println(data?.extras.toString())
-
+    /**
+     * When Google Sign In is complete, get the account as a result
+     *
+     * @param resultCode: Code of the result
+     * @param data: The data retrieved from the Google Sign In system
+     */
+    private fun handleGoogleSignInResolution(data: Intent?) {
+        startLoading()
+        // Perform google sign-in
         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+        var account: GoogleSignInAccount? = null
         try {
-            val account = task.getResult(ApiException::class.java)
-            System.out.println(account.toString())
-            System.out.println(account?.email)
+            account = task.getResult(ApiException::class.java)
         } catch (e: ApiException) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            System.out.println("Failed to login with status code: " + e.statusCode)
+            // TODO: Handle this error
+            System.out.println(e.localizedMessage)
+            stopLoading()
         }
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            RC_SIGN_IN -> handleGoogleSignInResolution(resultCode, data)
+        // Get the auth code and login with the DALI API
+        val authCode: String = unwrap(account?.serverAuthCode) or { return }
+        DALIMember.login(authCode).onFailure {
+            // TODO: Handle this error
+            stopLoading()
+            System.out.println(it.localizedMessage)
+        }.onSuccess {
+            stopLoading()
         }
     }
 }

@@ -5,6 +5,7 @@
     <string name="noFoodLabel">No Food Tonight</string>
     <string name="foodLabel">Food Tonight:</string>
     <string name="upcomingEvents">Upcoming Events</string>
+    <string name="server_client_id">332937749798-bine77sqgs2gstjmpjgvcl5smsdvnl4t.apps.googleusercontent.com</string>
 
     <!-- Content Description -->
     <string name="backgroundImageContentDescription">Background image</string>
