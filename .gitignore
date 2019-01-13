@@ -11,3 +11,4 @@
 .externalNativeBuild
 *.apk
 app/release
+credentials.json
