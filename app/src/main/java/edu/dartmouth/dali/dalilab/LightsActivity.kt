@@ -8,7 +8,7 @@ import android.os.Bundle
 class LightsActivity : ActionBarActivity() {
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, DevicesActivity::class.java)
+            return Intent(context, LightsActivity::class.java)
         }
     }
 

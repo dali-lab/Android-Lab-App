@@ -8,7 +8,7 @@ import android.os.Bundle
 class VotingActivity : ActionBarActivity() {
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, DevicesActivity::class.java)
+            return Intent(context, VotingActivity::class.java)
         }
     }
 
