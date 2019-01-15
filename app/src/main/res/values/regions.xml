@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="regions">
+        <item>F2363048-F649-4537-AB7E-4DADB9966544</item>
+        <item>C371F9F9-572D-4D59-956C-5C3DF4BE50B7</item>
+    </string-array>
+
+    <string-array name="region_names">
+        <item>DALI</item>
+        <item>Checkin</item>
+    </string-array>
+</resources>
