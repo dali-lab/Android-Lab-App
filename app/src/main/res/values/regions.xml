@@ -5,6 +5,8 @@
         <item>C371F9F9-572D-4D59-956C-5C3DF4BE50B7</item>
     </string-array>
 
+    <string name="DALI">DALI</string>
+    <string name="Checkin">Checkin</string>
     <string-array name="region_names">
         <item>DALI</item>
         <item>Checkin</item>

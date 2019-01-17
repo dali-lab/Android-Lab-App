@@ -29,6 +29,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 dependencies {
+    implementation 'com.estimote:sdk:1.4.5'
     implementation 'org.altbeacon:android-beacon-library:2.12.4'
     implementation 'com.github.vjames19.kotlin-futures:kotlin-futures-jdk8:1.2.0'
     implementation 'com.github.vjames19.kotlin-futures:kotlin-futures-guava:1.2.0'

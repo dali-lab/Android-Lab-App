@@ -3,6 +3,10 @@
           xmlns:tools="http://schemas.android.com/tools" package="edu.dartmouth.dali.dalilab">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
             android:allowBackup="true"
@@ -26,19 +30,19 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".DevicesActivity"
+        <activity android:name=".Devices.DevicesActivity"
                   android:screenOrientation="portrait"
                   android:label="Devices">
         </activity>
-        <activity android:name=".LightsActivity"
+        <activity android:name=".Lights.LightsActivity"
                   android:screenOrientation="portrait"
                   android:label="Lights">
         </activity>
-        <activity android:name=".PeopleActivity"
+        <activity android:name=".People.PeopleActivity"
                   android:screenOrientation="portrait"
                   android:label="People in the Lab">
         </activity>
-        <activity android:name=".VotingActivity"
+        <activity android:name=".Voting.VotingActivity"
                   android:screenOrientation="portrait"
                   android:label="Voting Events">
         </activity>

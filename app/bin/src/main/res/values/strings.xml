@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">DALI Lab</string>
+    <string name="inDALITextInside">In DALI Lab</string>
+    <string name="inDALITextOutside">In DALI Lab</string>
+    <string name="noFoodLabel">No Food Tonight</string>
+    <string name="foodLabel">Food Tonight:</string>
+    <string name="upcomingEvents">Upcoming Events</string>
+    <string name="server_client_id">332937749798-bine77sqgs2gstjmpjgvcl5smsdvnl4t.apps.googleusercontent.com</string>
+
+    <!-- Content Description -->
+    <string name="backgroundImageContentDescription">Background image</string>
+    <string name="daliLabIconContentDescription">DALI Lab icon</string>
+    <string name="separatorContentDescription">DALI Lab icon</string>
+    <string name="devicesImageContentDescription">Devices</string>
+    <string name="lightImageContentDescription">Lights</string>
+    <string name="peopleImageContentDescription">People</string>
+    <string name="voteImageContentDescription">Vote</string>
+</resources>

@@ -5,7 +5,7 @@ class Event<T> constructor(delegate: EventDelegate? = null) {
     private val delegate = delegate
 
     /// All the listeners for this event
-    var listeners: ArrayList<EventListener<T>> = ArrayList()
+    internal var listeners: ArrayList<EventListener<T>> = ArrayList()
         private set
     /// A list of listeners filtered by those still listening
     private val filteredListeners: List<EventListener<T>>
@@ -19,15 +19,26 @@ class Event<T> constructor(delegate: EventDelegate? = null) {
             return filtered.toList()
         }
 
+    var listenersStopped: Boolean = true
+        private set
+
     /**
      * Listen for changes to this event.
      *
      * @param func: The function that should be called when an update is ready
      * @returns EventListener to control your listener
      */
-    fun on(func: (T) -> Unit): EventListener<T> {
+    fun on(func: (T) -> Unit): Listener {
         val listener = EventListener(this, func)
         listeners.add(listener)
+        listenerDidChangeListening(listener)
+        return listener
+    }
+
+    fun on(delegate: EventListenerDelegate<T>): Listener {
+        val listener = EventListener(this, delegate)
+        listeners.add(listener)
+        listenerDidChangeListening(listener)
         return listener
     }
 
@@ -46,14 +57,16 @@ class Event<T> constructor(delegate: EventDelegate? = null) {
         if (this.delegate == null) return
 
         if (filteredListeners.isEmpty()) {
-            delegate.eventListenersStopped()
+            listenersStopped = true
+            delegate.eventListenersStopped(this)
         } else if (filteredListeners.count() == 1 && listener.isListening) {
-            delegate.eventListenersStarted()
+            listenersStopped = false
+            delegate.eventListenersStarted(this)
         }
     }
 }
 
 interface EventDelegate {
-    fun eventListenersStopped()
-    fun eventListenersStarted()
+    fun eventListenersStopped(forEvent: Event<*>)
+    fun eventListenersStarted(forEvent: Event<*>)
 }
