@@ -1,5 +1,6 @@
 package edu.dartmouth.dali.dalilab.Location
 
+import DALI.DALILocation
 import EmitterKit.Event
 import EmitterKit.EventDelegate
 import EmitterKit.EventListenerDelegate
@@ -46,6 +47,7 @@ class LocationTracker: EventListenerDelegate<Pair<Region, Int>>, EventDelegate {
     override fun eventTriggered(event: Event<Pair<Region, Int>>, data: Pair<Region, Int>) {
         if (data.first.uniqueId == Location.DALI.id) {
             inDALIEvent.emit(data.second == MonitorNotifier.INSIDE)
+            DALILocation.Shared.submit(data.second == MonitorNotifier.INSIDE, true)
         } else if (data.first.uniqueId == Location.CHECK_IN.id) {
             inCheckInEvent.emit(data.second == MonitorNotifier.INSIDE)
         }

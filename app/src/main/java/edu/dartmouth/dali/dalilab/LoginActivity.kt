@@ -3,26 +3,28 @@ package edu.dartmouth.dali.dalilab
 import DALI.DALIConfig
 import DALI.DALIMember
 import DALI.DALIapi
-import DALI.guard
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.auth.api.signin.*
-import android.R.attr.data
+import android.content.Context
 import android.view.View
 import android.widget.ProgressBar
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
-import io.github.vjames19.futures.jdk8.onFailure
-import io.github.vjames19.futures.jdk8.onSuccess
-import java.lang.Error
+import io.github.vjames19.futures.jdk8.*
 
 class LoginActivity : AppCompatActivity() {
     val RC_SIGN_IN: Int = 1
     private lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, LoginActivity::class.java)
+        }
+    }
 
     /// Do setup
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,8 +83,11 @@ class LoginActivity : AppCompatActivity() {
 
     fun transitionToMain() {
         val intent = MainActivity.newIntent(applicationContext)
-        startActivity(intent)
+        intent.addFlags(intent.getFlags().and(Intent.FLAG_ACTIVITY_NO_HISTORY))
+        applicationContext.startActivity(intent)
     }
+
+    override fun onBackPressed() {}
 
     /// The activity completed
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

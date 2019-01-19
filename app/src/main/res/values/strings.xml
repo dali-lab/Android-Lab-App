@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DALI Lab</string>
     <string name="inDALITextInside">In DALI Lab</string>
-    <string name="inDALITextOutside">In DALI Lab</string>
+    <string name="inDALITextOutside">Not In DALI Lab</string>
     <string name="noFoodLabel">No Food Tonight</string>
     <string name="foodLabel">Food Tonight:</string>
     <string name="upcomingEvents">Upcoming Events</string>
@@ -15,4 +15,19 @@
     <string name="lightImageContentDescription">Lights</string>
     <string name="peopleImageContentDescription">People</string>
     <string name="voteImageContentDescription">Vote</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="notifyEnterExit">Enter or Exit the Lab</string>
+    <string name="notifyEnterExitDetail">Will notify you when you enter or exit the lab to welcome you back</string>
+
+    <string name="notifyCheckIn">Check In To Events</string>
+    <string name="notifyCheckInDetail">Will notify you when you are checked into an event</string>
+
+    <string name="notifyVoting">Enter Voting Event</string>
+    <string name="notifyVotingDetail">Will notify you when voting is available for an event you are at</string>
+
+    <string name="share">Share when I\'m in the lab</string>
+    <string name="shareDetail">Will include your name on the list of people in the lab while you are in DALI</string>
 </resources>

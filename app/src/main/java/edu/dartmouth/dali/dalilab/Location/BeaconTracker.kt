@@ -17,7 +17,7 @@ class BeaconTracker constructor(context: Context): BeaconConsumer, MonitorNotifi
             get() = _shared!!
 
         fun initialize(context: Context) {
-            if (shared != null) return
+            if (_shared != null) return
             _shared =
                     BeaconTracker(context)
         }
@@ -51,8 +51,10 @@ class BeaconTracker constructor(context: Context): BeaconConsumer, MonitorNotifi
     override fun didDetermineStateForRegion(status: Int, region: Region?) {
         if (status == MonitorNotifier.INSIDE) {
             Log.d("BeaconTracker", "Inside region named " + region?.uniqueId)
+            region?.let { activeRegions.add(region) }
         } else {
             Log.d("BeaconTracker", "Outside region named " + region?.uniqueId)
+            region?.let { activeRegions.remove(region) }
         }
         region?.let { determinedStateEvent.emit(Pair(region, status)) }
     }

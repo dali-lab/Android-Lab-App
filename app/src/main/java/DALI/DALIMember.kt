@@ -67,10 +67,10 @@ class DALIMember private constructor() {
         /**
          * Parse a member object from a given JSON object
          */
-        private fun parse(json: JSONObject): DALIMember? {
+        internal fun parse(json: JSONObject): DALIMember? {
             val name = json.getString("fullName").guard { return null }
             val email = json.getString("email").guard { return null }
-            val isAdmin = json.getBoolean("isAdmin").guard { return null }
+            val isAdmin = json.getBoolean("isAdmin")
             val id = json.getString("id").guard { return null }
             val photoURLString = json.getString("photoUrl").guard { return null }
 

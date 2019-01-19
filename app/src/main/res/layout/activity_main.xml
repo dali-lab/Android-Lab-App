@@ -11,13 +11,17 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:theme="@style/AppTheme.NoActionBar"
-            android:id="@+id/appBarLayout">
+            android:id="@+id/appBarLayout" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="parent">
 
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_main"
              android:layout_height="wrap_content"
-             android:layout_width="wrap_content" android:id="@+id/include"/>
+             android:layout_width="wrap_content" android:id="@+id/include"
+             app:layout_constraintTop_toTopOf="@+id/appBarLayout" app:layout_constraintStart_toStartOf="@+id/guideline"
+             app:layout_constraintEnd_toStartOf="@+id/guideline"/>
     <ImageView
             android:layout_width="0dp"
             android:layout_height="0dp" app:srcCompat="@drawable/background" android:id="@+id/backgroundImageView"
@@ -40,7 +44,8 @@
             android:id="@+id/settingsButton" android:background="@drawable/white_gear"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="45dp" app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_marginTop="45dp" app:layout_constraintTop_toTopOf="parent"
+            android:onClick="launchSettingView"/>
     <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -172,5 +177,13 @@
     <android.support.constraint.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
                                           android:id="@+id/guideline6"
                                           android:orientation="vertical" app:layout_constraintGuide_percent="0.9"/>
+    <ListView
+            android:layout_width="340dp"
+            android:layout_height="391dp"
+            app:layout_constraintEnd_toEndOf="@+id/separator" app:layout_constraintStart_toStartOf="@+id/separator"
+            android:layout_marginBottom="32dp" app:layout_constraintBottom_toTopOf="@+id/bottomButtonGuidline"
+            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/upcomingEventsTextView"
+            tools:listitem="@layout/event_cell" android:id="@+id/listView" android:scrollbars="vertical"
+            android:divider="@android:color/white" android:dividerHeight="0.3dp"/>
 
 </android.support.constraint.ConstraintLayout>

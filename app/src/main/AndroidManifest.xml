@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="edu.dartmouth.dali.dalilab">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="edu.dartmouth.dali.dalilab">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -14,37 +15,50 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
+            android:theme="@style/AppTheme"
+            tools:ignore="GoogleAppIndexingWarning">
+        <activity
+                android:name=".SettingsActivity"
+                android:label="@string/title_activity_settings"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="edu.dartmouth.dali.dalilab.MainActivity"/>
+        </activity>
         <activity
                 android:name=".MainActivity"
-                android:theme="@style/AppTheme.NoActionBar"
-                android:screenOrientation="portrait">
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
                 android:name=".LoginActivity"
-                android:theme="@style/AppTheme.NoActionBar"
-                android:screenOrientation="portrait">
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Devices.DevicesActivity"
-                  android:screenOrientation="portrait"
-                  android:label="Devices">
+        <activity
+                android:name=".Devices.DevicesActivity"
+                android:label="Devices"
+                android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Lights.LightsActivity"
-                  android:screenOrientation="portrait"
-                  android:label="Lights">
+        <activity
+                android:name=".Lights.LightsActivity"
+                android:label="Lights"
+                android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".People.PeopleActivity"
-                  android:screenOrientation="portrait"
-                  android:label="People in the Lab">
+        <activity
+                android:name=".People.PeopleActivity"
+                android:label="People in the Lab"
+                android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Voting.VotingActivity"
-                  android:screenOrientation="portrait"
-                  android:label="Voting Events">
+        <activity
+                android:name=".Voting.VotingActivity"
+                android:label="Voting Events"
+                android:screenOrientation="portrait">
         </activity>
     </application>
 
