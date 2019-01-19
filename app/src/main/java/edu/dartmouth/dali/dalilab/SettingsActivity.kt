@@ -11,6 +11,9 @@ import android.preference.PreferenceManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlin.math.sign
+import android.support.v4.app.NavUtils
+import android.view.MenuItem
+
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -54,6 +57,17 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
      */
     private fun setupActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            android.R.id.home -> {
+                NavUtils.navigateUpFromSameTask(this)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {
