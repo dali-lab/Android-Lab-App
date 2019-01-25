@@ -30,4 +30,7 @@
 
     <string name="share">Share when I\'m in the lab</string>
     <string name="shareDetail">Will include your name on the list of people in the lab while you are in DALI</string>
+
+    <!-- Lights -->
+    <string name="noGroupSelected">No group selected</string>
 </resources>

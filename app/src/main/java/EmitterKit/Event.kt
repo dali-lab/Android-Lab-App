@@ -1,9 +1,6 @@
 package EmitterKit
 
-class Event<T> constructor(delegate: EventDelegate? = null) {
-    /// Delegate (optional)
-    private val delegate = delegate
-
+class Event<T> constructor(val delegate: EventDelegate? = null) {
     /// All the listeners for this event
     internal var listeners: ArrayList<EventListener<T>> = ArrayList()
         private set

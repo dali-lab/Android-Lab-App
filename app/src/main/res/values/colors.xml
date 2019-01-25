@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#1D7A8A</color>
     <color name="navBarTint">#50E3C2</color>
     <color name="colorAccent">#F07D21</color>
+    <color name="darkBackground">#3F3D3D</color>
+    <color name="selectedRow">#E7E7E7</color>
 </resources>
