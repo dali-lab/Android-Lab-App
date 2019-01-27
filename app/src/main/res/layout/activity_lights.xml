@@ -151,4 +151,6 @@
             app:layout_constraintStart_toStartOf="@+id/center"
             android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/center"
             android:layout_marginEnd="8dp" app:layout_constraintHorizontal_bias="0.509" android:layout_marginTop="4dp"/>
+
+    <include layout="@layout/loading_overlay"/>
 </android.support.constraint.ConstraintLayout>

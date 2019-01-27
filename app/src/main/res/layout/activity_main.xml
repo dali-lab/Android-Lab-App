@@ -64,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="@+id/voteButton"
             app:layout_constraintTop_toTopOf="@+id/voteButton"
             app:layout_constraintBottom_toBottomOf="@+id/voteButton"
-            android:contentDescription="@string/voteImageContentDescription"/>
+            android:contentDescription="@string/voteImageContentDescription" android:visibility="invisible"/>
     <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -83,7 +83,7 @@
             app:layout_constraintEnd_toEndOf="@+id/deviceButton"
             app:layout_constraintBottom_toBottomOf="@+id/deviceButton"
             app:layout_constraintTop_toTopOf="@+id/deviceButton"
-            android:contentDescription="@string/devicesImageContentDescription"/>
+            android:contentDescription="@string/devicesImageContentDescription" android:visibility="invisible"/>
     <Button
             android:layout_width="0dp"
             android:layout_height="40dp"

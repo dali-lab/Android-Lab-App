@@ -29,6 +29,7 @@ class LightsActivity : ActionBarActivity(), EventListenerDelegate<List<DALILight
     lateinit var selectedGroupTextView: TextView
     lateinit var onSwitch: Switch
     lateinit var listView: ListView
+    lateinit var overlay: View
     lateinit var adapter: Adapter
 
     var selectedGroup: DALILights.Group? = null
@@ -54,6 +55,9 @@ class LightsActivity : ActionBarActivity(), EventListenerDelegate<List<DALILight
         onSwitch = findViewById(R.id.onSwitch)
         onSwitch.visibility = View.INVISIBLE
         listView = findViewById(R.id.listView)
+        overlay = findViewById(R.id.progress_overlay)
+        overlay.visibility = View.VISIBLE
+
         listView.divider = null
         listView.dividerHeight = 0
         listView.onItemClickListener = this
@@ -94,7 +98,10 @@ class LightsActivity : ActionBarActivity(), EventListenerDelegate<List<DALILight
         }
         groupsForButtons[R.id.podsButton] = DALILights.Group.pods
         groupsForButtons[R.id.allButton] = DALILights.Group.all
-        runOnUiThread { updateCardView() }
+        runOnUiThread {
+            overlay.visibility = View.GONE
+            updateCardView()
+        }
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -174,7 +181,7 @@ class LightsActivity : ActionBarActivity(), EventListenerDelegate<List<DALILight
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val inflator = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflator.inflate(R.layout.scene_cell, null)
-            view.textView.text = scenes[position]
+            view.textView.text = scenes[position].capitalize()
 
             if (selectedScene != null && scenes[position] == selectedScene) {
                 view.setBackgroundColor(context!!.resources.getColor(R.color.selectedRow))

@@ -61,6 +61,9 @@
                 android:label="Voting Events"
                 android:screenOrientation="portrait">
         </activity>
+        <meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="b6332eaf2877cd4c71ae5da96a8785e6e49870aa" />
     </application>
 
 </manifest>

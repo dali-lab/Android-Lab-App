@@ -15,6 +15,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import io.github.vjames19.futures.jdk8.*
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 class LoginActivity : AppCompatActivity() {
     val RC_SIGN_IN: Int = 1
@@ -30,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        Fabric.with(this, Crashlytics())
 
         val config = DALIConfig("https://dalilab-api.herokuapp.com", this)
         DALIapi.configure(config)
