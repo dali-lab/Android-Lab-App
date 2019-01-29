@@ -10,7 +10,9 @@ import edu.dartmouth.dali.dalilab.R
 class DevicesActivity : ActionBarActivity() {
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, DevicesActivity::class.java)
+            val intent = Intent(context, DevicesActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            return intent
         }
     }
 

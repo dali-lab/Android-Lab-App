@@ -9,7 +9,9 @@ import edu.dartmouth.dali.dalilab.R
 class VotingActivity : ActionBarActivity() {
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, VotingActivity::class.java)
+            val intent = Intent(context, VotingActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            return intent
         }
     }
 

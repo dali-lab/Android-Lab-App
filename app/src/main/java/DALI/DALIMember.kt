@@ -1,14 +1,13 @@
 package DALI
 
 import EmitterKit.Event
-import io.github.vjames19.futures.jdk8.ForkJoinExecutor
-import io.github.vjames19.futures.jdk8.Future
-import com.loopj.android.http.JsonHttpResponseHandler
-import cz.msebera.android.httpclient.Header
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import org.json.JSONObject
 import java.lang.Error
 import java.net.URL
-import java.util.concurrent.Executors
 import java.util.concurrent.CompletableFuture
 
 class DALIMember private constructor() {
@@ -28,34 +27,50 @@ class DALIMember private constructor() {
         fun login(authCode: String): CompletableFuture<DALIMember> {
             val urlString = "%s/api/signin/code".format(DALIapi.config.serverURL.toString())
 
-            return CompletableFuture.supplyAsync {
-                val response = khttp.post(
-                    urlString,
-                    json = mapOf("code" to authCode))
+            val completableFuture = CompletableFuture<DALIMember>()
+            val queue = Volley.newRequestQueue(DALIapi.config.context)
+            val jsonRequest = JsonObjectRequest(Request.Method.POST, urlString, JSONObject(mapOf("code" to authCode)),
+                Response.Listener { response ->
+                    DALIapi.config.token = response.getString("token")
 
-                val json = response.jsonObject
-                DALIapi.config.token = json.getString("token")
+                    val user = response.getJSONObject("user").guard { throw Error("No user object!") }
+                    val member = DALIMember.parse(user).guard { throw Error("Failed to parse member") }
+                    DALIapi.config.member = member
+                    loggedInMemberChangedEvent.emit(member)
+                    completableFuture.complete(member)
+                },
+                Response.ErrorListener { error ->
+                    System.out.println(error.localizedMessage)
+                })
 
-                val user = json.getJSONObject("user").guard { throw Error("No user object!") }
-                val member = DALIMember.parse(user).guard { throw Error("Failed to parse member") }
-                DALIapi.config.member = member
-                loggedInMemberChangedEvent.emit(member)
-                member
-            }
+            queue.add(jsonRequest)
+            return completableFuture
         }
 
         fun loginSilently(): CompletableFuture<DALIMember?> {
             val token = DALIapi.config.token?.guard { return CompletableFuture.completedFuture(null) }!!
             val urlString = "%s/api/users/me".format(DALIapi.config.serverURL.toString())
 
-            return CompletableFuture.supplyAsync {
-                val response = khttp.get(urlString, headers = mapOf("authorization" to token))
-                val json = response.jsonObject
-                val member = DALIMember.parse(json)
-                DALIapi.config.member = member
-                loggedInMemberChangedEvent.emit(member)
-                member
+            val future = CompletableFuture<DALIMember?>()
+
+            val request = object : JsonObjectRequest(urlString, null,
+                Response.Listener { response ->
+                    val member = DALIMember.parse(response)
+                    DALIapi.config.member = member
+
+                    future.complete(member)
+                    loggedInMemberChangedEvent.emit(member)
+                },
+                Response.ErrorListener { error ->
+                    future.completeExceptionally(error)
+                }) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    return mutableMapOf("authorization" to token)
+                }
             }
+            DALIapi.requestQueue.add(request)
+
+            return future
         }
 
         fun logout() {

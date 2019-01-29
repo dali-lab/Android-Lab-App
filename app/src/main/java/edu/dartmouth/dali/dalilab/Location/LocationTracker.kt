@@ -7,6 +7,16 @@ import EmitterKit.EventListenerDelegate
 import edu.dartmouth.dali.dalilab.R
 import org.altbeacon.beacon.MonitorNotifier
 import org.altbeacon.beacon.Region
+import android.content.Context.NOTIFICATION_SERVICE
+import android.support.v4.content.ContextCompat.getSystemService
+import android.app.NotificationManager
+import android.R.id.message
+import android.app.PendingIntent
+import android.content.Intent
+import edu.dartmouth.dali.dalilab.MainActivity
+import android.app.Notification
+import android.content.Context
+
 
 class LocationTracker: EventListenerDelegate<Pair<Region, Int>>, EventDelegate {
     companion object {
@@ -48,6 +58,23 @@ class LocationTracker: EventListenerDelegate<Pair<Region, Int>>, EventDelegate {
         if (data.first.uniqueId == Location.DALI.id) {
             inDALIEvent.emit(data.second == MonitorNotifier.INSIDE)
             DALILocation.Shared.submit(data.second == MonitorNotifier.INSIDE, true)
+
+            val notifyIntent = Intent(BeaconTracker.shared.context, MainActivity::class.java)
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val pendingIntent = PendingIntent.getActivities(
+                BeaconTracker.shared.context, 0,
+                arrayOf(notifyIntent), PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            val notification = Notification.Builder(BeaconTracker.shared.context)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("Welcome back!")
+                .setContentText("Something draws near")
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build()
+            val notificationManager = BeaconTracker.shared.context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+            notificationManager!!.notify(1, notification)
+
         } else if (data.first.uniqueId == Location.CHECK_IN.id) {
             inCheckInEvent.emit(data.second == MonitorNotifier.INSIDE)
         }

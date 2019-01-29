@@ -27,7 +27,9 @@ class PeopleActivity : ActionBarActivity() {
 
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, PeopleActivity::class.java)
+            val intent = Intent(context, PeopleActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            return intent
         }
     }
 

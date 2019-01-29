@@ -1,9 +1,14 @@
 package DALI
 
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
 import edu.dartmouth.dali.dalilab.unwrap
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URI
 import java.util.concurrent.CompletableFuture
@@ -22,11 +27,22 @@ class DALILocation {
                 val token = DALIapi.config.token?.guard { return CompletableFuture.completedFuture(null) }!!
                 val urlString = "%s/api/location/tim".format(DALIapi.config.serverURL.toString())
 
-                return CompletableFuture.supplyAsync {
-                    val response = khttp.get(urlString, headers = mapOf("authorization" to token))
-                    val json = response.jsonObject
-                    parse(json)
+                val future = CompletableFuture<Tim>()
+                val request = object : JsonObjectRequest(urlString, null,
+                    Response.Listener<JSONObject> {
+                        future.complete(parse(it))
+                    },
+                    Response.ErrorListener {
+                        future.completeExceptionally(it)
+                    }) {
+                    override fun getHeaders(): MutableMap<String, String> {
+                        return mutableMapOf("authorization" to token)
+                    }
                 }
+
+                DALIapi.requestQueue.add(request)
+
+                return future
             }
 
             private fun parse(json: JSONObject): Tim? {
@@ -51,21 +67,29 @@ class DALILocation {
                 val token = DALIapi.config.token?.guard { return CompletableFuture.completedFuture(null) }!!
                 val urlString = "%s/api/location/shared".format(DALIapi.config.serverURL.toString())
 
-                return CompletableFuture.supplyAsync {
-                    val response = khttp.get(urlString, headers = mapOf("authorization" to token))
-                    val json = response.jsonArray
-
+                val future = CompletableFuture<List<DALIMember>>()
+                val request = object : JsonArrayRequest(urlString, Response.Listener<JSONArray> {
                     var array = ArrayList<DALIMember>()
-                    for (i in 0..(json.length() - 1)) {
-                        val obj = json.getJSONObject(i).getJSONObject("user")
+                    for (i in 0..(it.length() - 1)) {
+                        val obj = it.getJSONObject(i).getJSONObject("user")
                         val member = DALIMember.parse(obj)
                         member?.let {
                             array.add(member)
                         }
                     }
 
-                    array.toList()
+                    future.complete(array.toList())
+                }, Response.ErrorListener {
+                    future.completeExceptionally(it)
+                }) {
+                    override fun getHeaders(): MutableMap<String, String> {
+                        return mutableMapOf("authorization" to token)
+                    }
                 }
+
+                DALIapi.requestQueue.add(request)
+
+                return future
             }
 
             fun observe(): Socket {
@@ -79,10 +103,19 @@ class DALILocation {
 
                 val data = mapOf("inDALI" to inDALI, "entering" to entering, "sharing" to true)
 
-                return CompletableFuture.supplyAsync {
-                    khttp.post(urlString, headers = mapOf("authorization" to token), json = data)
-                    null
+                val future = CompletableFuture<Void>()
+                val request = object : JsonObjectRequest(Request.Method.POST, urlString, JSONObject(data), Response.Listener {
+                    future.complete(null)
+                }, Response.ErrorListener {
+                    future.completeExceptionally(it)
+                }) {
+                    override fun getHeaders(): MutableMap<String, String> {
+                        return mutableMapOf("authorization" to token)
+                    }
                 }
+
+                DALIapi.requestQueue.add(request)
+                return future
             }
         }
     }

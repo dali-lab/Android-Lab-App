@@ -61,7 +61,9 @@ class LoginActivity : AppCompatActivity() {
 
         DALIMember.loggedInMemberChangedEvent.on {
             it?.let {
-                this.transitionToMain()
+                runOnUiThread {
+                    this.transitionToMain()
+                }
             }
         }
     }
@@ -76,18 +78,21 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun stopLoading() {
-        val progress = this.findViewById<ProgressBar>(R.id.progressBar)
-        progress.visibility = View.INVISIBLE
+        runOnUiThread {
+            val progress = this.findViewById<ProgressBar>(R.id.progressBar)
+            progress.visibility = View.INVISIBLE
 
-        val signInButton = this.findViewById<SignInButton>(R.id.sign_in_button)
-        signInButton.isClickable = true
-        signInButton.alpha = 1.0.toFloat()
+            val signInButton = this.findViewById<SignInButton>(R.id.sign_in_button)
+            signInButton.isClickable = true
+            signInButton.alpha = 1.0.toFloat()
+        }
     }
 
     fun transitionToMain() {
-        val intent = MainActivity.newIntent(applicationContext)
-        intent.addFlags(intent.getFlags().and(Intent.FLAG_ACTIVITY_NO_HISTORY))
-        applicationContext.startActivity(intent)
+        val intent = MainActivity.newIntent(this)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        startActivity(intent)
+        finish()
     }
 
     override fun onBackPressed() {}
@@ -122,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
             account = task.getResult(ApiException::class.java)
         } catch (e: ApiException) {
             // TODO: Handle this error
-            System.out.println(e.localizedMessage)
+            System.out.println(e.toString())
             stopLoading()
         }
 

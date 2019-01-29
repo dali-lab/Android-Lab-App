@@ -6,6 +6,8 @@
 
 package DALI
 
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import io.socket.client.Manager
 
 /**
@@ -21,6 +23,10 @@ class DALIapi private constructor () {
 
         val socketManager: Manager
             get() = Manager(config.serverURL.toURI())
+
+        val requestQueue: RequestQueue by lazy {
+            Volley.newRequestQueue(DALIapi.config.context)
+        }
 
         /**
          * Configure the DALI framework with the given config

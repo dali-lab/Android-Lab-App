@@ -39,9 +39,8 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
             GoogleSignIn.getClient(this, mGoogleSignInOptions).signOut()
 
             val intent = LoginActivity.newIntent(applicationContext)
-            intent.addFlags(intent.getFlags().and(Intent.FLAG_ACTIVITY_NO_HISTORY or
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
             applicationContext.startActivity(intent)
+            finish()
             true
         }
 
@@ -72,7 +71,9 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
 
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, SettingsActivity::class.java)
+            val intent = Intent(context, SettingsActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            return intent
         }
 
         fun notifyEnterExitLab(context: Context): Boolean {

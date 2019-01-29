@@ -11,14 +11,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
 import edu.dartmouth.dali.dalilab.Devices.DevicesActivity
 import edu.dartmouth.dali.dalilab.Lights.LightsActivity
 import edu.dartmouth.dali.dalilab.Location.BeaconTracker
@@ -28,9 +26,6 @@ import edu.dartmouth.dali.dalilab.Voting.VotingActivity
 import io.github.vjames19.futures.jdk8.onFailure
 import io.github.vjames19.futures.jdk8.onSuccess
 import kotlinx.android.synthetic.main.event_cell.view.*
-import kotlinx.android.synthetic.main.person_cell.view.*
-import java.net.URL
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 

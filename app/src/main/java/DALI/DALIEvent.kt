@@ -1,5 +1,8 @@
 package DALI
 
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,18 +15,28 @@ class DALIEvent private constructor(val name: String, val description: String?, 
             val token = DALIapi.config.token?.guard { return CompletableFuture.completedFuture(null) }!!
             val urlString = "%s/api/events/week".format(DALIapi.config.serverURL.toString())
 
-            return CompletableFuture.supplyAsync {
-                val response = khttp.get(urlString, headers = mapOf("authorization" to token))
-                val json = response.jsonArray
+            val completableFuture = CompletableFuture<List<DALIEvent>>()
+            val request = object : JsonArrayRequest(urlString,
+                Response.Listener { response ->
+                    val array = ArrayList<DALIEvent>()
+                    for (i in 0..(response.length() - 1)) {
+                        val obj = response.getJSONObject(i)
+                        DALIEvent.parse(obj)?.let { array.add(it) }
+                    }
 
-                val array = ArrayList<DALIEvent>()
-                for (i in 0..(json.length() - 1)) {
-                    val obj = json.getJSONObject(i)
-                    DALIEvent.parse(obj)?.let { array.add(it) }
+                    array.toList()
+                    completableFuture.complete(array)
+                },
+                Response.ErrorListener { error ->
+                    completableFuture.completeExceptionally(error)
+                }) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    return mutableMapOf("authorization" to token)
                 }
-
-                array.toList()
             }
+
+            DALIapi.requestQueue.add(request)
+            return completableFuture
         }
 
         internal fun parse(json: JSONObject): DALIEvent? {

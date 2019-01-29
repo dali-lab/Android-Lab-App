@@ -2,12 +2,11 @@ package DALI
 
 import EmitterKit.Event
 import EmitterKit.EventDelegate
-import android.util.Log
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import edu.dartmouth.dali.dalilab.unwrap
-import io.github.vjames19.futures.jdk8.onFailure
-import io.github.vjames19.futures.jdk8.onSuccess
 import io.socket.client.Socket
-import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -136,17 +135,24 @@ class DALILights private constructor(): EventDelegate {
         }
 
         private fun setValue(value: String): CompletableFuture<Boolean> {
-            return CompletableFuture.supplyAsync {
-                var urlString = "%s/api/lights/".format(DALIapi.config.serverURL)
-                urlString = urlString + name
+            var urlString = "%s/api/lights/".format(DALIapi.config.serverURL)
+            urlString = urlString + name
 
-                val response = khttp.post(urlString,
-                    headers = mapOf("authorization" to DALIapi.config.token!!),
-                    json = mapOf("value" to value))
-
-                Log.d("DALILights", response.text)
-                true
+            val future = CompletableFuture<Boolean>()
+            val request = object : JsonObjectRequest(Request.Method.POST, urlString, JSONObject(mapOf("value" to value)),
+                Response.Listener<JSONObject> {
+                    future.complete(true)
+                }, Response.ErrorListener {
+                    future.completeExceptionally(it)
+                }) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    return mutableMapOf("authorization" to DALIapi.config.token!!)
+                }
             }
+
+            DALIapi.requestQueue.add(request)
+
+            return future
         }
     }
 
@@ -233,38 +239,43 @@ class DALILights private constructor(): EventDelegate {
             this.handleData(it[0])
         }
 
-        CompletableFuture.supplyAsync {
-            val response = khttp.get("%s/api/lights/config".format(DALIapi.config.serverURL),
-                      headers = mapOf("authorization" to DALIapi.config.token!!))
-            val json = response.jsonObject
-            var map = HashMap<String, List<String>>()
-            var colorMap = HashMap<String, HashMap<String, String>>()
+        val urlString = "%s/api/lights/config".format(DALIapi.config.serverURL)
+        val request = object : JsonObjectRequest(urlString, null,
+            {
+                var map = HashMap<String, List<String>>()
+                var colorMap = HashMap<String, HashMap<String, String>>()
 
-            val keys = json.keys()
-            while (keys.hasNext()) {
-                val key = keys.next()
-                colorMap[key] = HashMap()
-                val value = json.optJSONArray(key) ?: continue
-                val array = ArrayList<String>()
-                for (i in 0..(value.length() - 1)) {
-                    val scene = value.optJSONObject(i) ?: continue
-                    val sceneName = scene.optString("name") ?: continue
-                    array.add(sceneName)
-                    colorMap[key]!![sceneName] = scene.optString("averageColor")
+                val keys = it.keys()
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    colorMap[key] = HashMap()
+                    val value = it.optJSONArray(key) ?: continue
+                    val array = ArrayList<String>()
+                    for (i in 0..(value.length() - 1)) {
+                        val scene = value.optJSONObject(i) ?: continue
+                        val sceneName = scene.optString("name") ?: continue
+                        array.add(sceneName)
+                        colorMap[key]!![sceneName] = scene.optString("averageColor")
+                    }
+
+                    map[key] = array
                 }
 
-                map[key] = array
-            }
+                DALILights.scenesAvgColorMap = colorMap
+                DALILights.scenesMap = map
 
-            DALILights.scenesAvgColorMap = colorMap
-            DALILights.scenesMap = map
+                socket.connect().on("connect") {
+                    socket.emit("authenticate", DALIapi.config.token)
+                }
+            }, {
 
-            socket.connect().on("connect") {
-                socket.emit("authenticate", DALIapi.config.token)
+            }) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return mutableMapOf("authorization" to DALIapi.config.token!!)
             }
-        }.onFailure {
-            System.out.println(it.localizedMessage)
         }
+
+        DALIapi.requestQueue.add(request)
     }
 
     override fun eventListenersStopped(forEvent: Event<*>) {

@@ -41,7 +41,9 @@ class LightsActivity : ActionBarActivity(), EventListenerDelegate<List<DALILight
 
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, LightsActivity::class.java)
+            val intent = Intent(context, LightsActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            return intent
         }
     }
 
