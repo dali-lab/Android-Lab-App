@@ -46,6 +46,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 dependencies {
+    implementation 'me.dm7.barcodescanner:zxing:1.9'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.pnikosis:materialish-progress:1.7'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.8@aar') {

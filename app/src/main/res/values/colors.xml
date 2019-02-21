@@ -6,4 +6,5 @@
     <color name="colorAccent">#F07D21</color>
     <color name="darkBackground">#3F3D3D</color>
     <color name="selectedRow">#E7E7E7</color>
+    <color name="clear">#00FFFFFF</color>
 </resources>

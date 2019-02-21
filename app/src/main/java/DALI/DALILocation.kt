@@ -5,6 +5,8 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import edu.dartmouth.dali.dalilab.unwrap
+import io.github.vjames19.futures.jdk8.map
+import io.github.vjames19.futures.jdk8.onSuccess
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
@@ -23,26 +25,12 @@ class DALILocation {
             private set
 
         companion object {
-            fun get(): CompletableFuture<Tim> {
-                val token = DALIapi.config.token?.guard { return CompletableFuture.completedFuture(null) }!!
+            fun get(): CompletableFuture<Tim?> {
                 val urlString = "%s/api/location/tim".format(DALIapi.config.serverURL.toString())
 
-                val future = CompletableFuture<Tim>()
-                val request = object : JsonObjectRequest(urlString, null,
-                    Response.Listener<JSONObject> {
-                        future.complete(parse(it))
-                    },
-                    Response.ErrorListener {
-                        future.completeExceptionally(it)
-                    }) {
-                    override fun getHeaders(): MutableMap<String, String> {
-                        return mutableMapOf("authorization" to token)
-                    }
+                return ServerCommunicator.get(urlString).map {
+                    parse(it.obj)
                 }
-
-                DALIapi.requestQueue.add(request)
-
-                return future
             }
 
             private fun parse(json: JSONObject): Tim? {
@@ -64,32 +52,20 @@ class DALILocation {
             }
 
             fun get(): CompletableFuture<List<DALIMember>> {
-                val token = DALIapi.config.token?.guard { return CompletableFuture.completedFuture(null) }!!
                 val urlString = "%s/api/location/shared".format(DALIapi.config.serverURL.toString())
+                return ServerCommunicator.get(urlString).map {
+                    val array = ArrayList<DALIMember>()
 
-                val future = CompletableFuture<List<DALIMember>>()
-                val request = object : JsonArrayRequest(urlString, Response.Listener<JSONArray> {
-                    var array = ArrayList<DALIMember>()
-                    for (i in 0..(it.length() - 1)) {
-                        val obj = it.getJSONObject(i).getJSONObject("user")
-                        val member = DALIMember.parse(obj)
+                    for (i in 0..(it.arr.length() - 1)) {
+                        val obj = it.arr.getJSONObject(i).getJSONObject("user")
+                        val member = DALIMember.parse(JSONAny(obj))
                         member?.let {
                             array.add(member)
                         }
                     }
 
-                    future.complete(array.toList())
-                }, Response.ErrorListener {
-                    future.completeExceptionally(it)
-                }) {
-                    override fun getHeaders(): MutableMap<String, String> {
-                        return mutableMapOf("authorization" to token)
-                    }
+                    array
                 }
-
-                DALIapi.requestQueue.add(request)
-
-                return future
             }
 
             fun observe(): Socket {
@@ -97,25 +73,11 @@ class DALILocation {
                 return socket!!
             }
 
-            fun submit(inDALI: Boolean, entering: Boolean): CompletableFuture<Void> {
-                val token = DALIapi.config.token?.guard { return CompletableFuture.completedFuture(null) }!!
+            fun submit(inDALI: Boolean, entering: Boolean): CompletableFuture<Any> {
                 val urlString = "%s/api/location/shared".format(DALIapi.config.serverURL.toString())
+                val data = JSONObject(mapOf("inDALI" to inDALI, "entering" to entering, "sharing" to true))
 
-                val data = mapOf("inDALI" to inDALI, "entering" to entering, "sharing" to true)
-
-                val future = CompletableFuture<Void>()
-                val request = object : JsonObjectRequest(Request.Method.POST, urlString, JSONObject(data), Response.Listener {
-                    future.complete(null)
-                }, Response.ErrorListener {
-                    future.completeExceptionally(it)
-                }) {
-                    override fun getHeaders(): MutableMap<String, String> {
-                        return mutableMapOf("authorization" to token)
-                    }
-                }
-
-                DALIapi.requestQueue.add(request)
-                return future
+                return ServerCommunicator.post(urlString, JSONAny(data)).map {}
             }
         }
     }

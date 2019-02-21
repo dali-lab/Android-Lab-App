@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:padding="16dp">
+
+    <TextView
+            android:text="Maticulous Manatee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/titleLabel" android:textSize="24sp"
+            android:textStyle="bold" android:textColor="@android:color/background_dark" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp" android:textAlignment="center"/>
+    <TextView
+            android:text="39vn2187ghn2h-g"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/idLabel"
+            app:layout_constraintTop_toBottomOf="@+id/titleLabel" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" android:textAlignment="center"/>
+    <TextView
+            android:text="Password: fasdfasf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/passwordLabel" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/idLabel" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp" android:textAlignment="center"/>
+    <Button
+            android:text="Check out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkOutButton" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/passwordLabel"/>
+</android.support.constraint.ConstraintLayout>

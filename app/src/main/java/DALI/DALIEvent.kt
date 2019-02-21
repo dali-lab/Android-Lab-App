@@ -3,6 +3,7 @@ package DALI
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
+import io.github.vjames19.futures.jdk8.map
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,31 +13,18 @@ import kotlin.collections.ArrayList
 class DALIEvent private constructor(val name: String, val description: String?, val location: String?, val start: Date, val end: Date, val id: String) {
     companion object {
         fun get(): CompletableFuture<List<DALIEvent>> {
-            val token = DALIapi.config.token?.guard { return CompletableFuture.completedFuture(null) }!!
             val urlString = "%s/api/events/week".format(DALIapi.config.serverURL.toString())
 
-            val completableFuture = CompletableFuture<List<DALIEvent>>()
-            val request = object : JsonArrayRequest(urlString,
-                Response.Listener { response ->
-                    val array = ArrayList<DALIEvent>()
-                    for (i in 0..(response.length() - 1)) {
-                        val obj = response.getJSONObject(i)
-                        DALIEvent.parse(obj)?.let { array.add(it) }
-                    }
-
-                    array.toList()
-                    completableFuture.complete(array)
-                },
-                Response.ErrorListener { error ->
-                    completableFuture.completeExceptionally(error)
-                }) {
-                override fun getHeaders(): MutableMap<String, String> {
-                    return mutableMapOf("authorization" to token)
+            return ServerCommunicator.get(urlString).map {
+                val array = ArrayList<DALIEvent>()
+                for (i in 0..(it.arr.length() - 1)) {
+                    val obj = it.arr.getJSONObject(i)
+                    DALIEvent.parse(obj)?.let { array.add(it) }
                 }
-            }
 
-            DALIapi.requestQueue.add(request)
-            return completableFuture
+                array.toList()
+                array
+            }
         }
 
         internal fun parse(json: JSONObject): DALIEvent? {
@@ -47,12 +35,16 @@ class DALIEvent private constructor(val name: String, val description: String?, 
             val description = json.optString("description")
             val location = json.optString("location")
 
-            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
-            format.timeZone = TimeZone.getTimeZone("0")
-            val start = format.parse(startString)
-            val end = format.parse(endString)
+            val start = dateFormatter().parse(startString)
+            val end = dateFormatter().parse(endString)
 
             return DALIEvent(name, description, location, start, end, id)
+        }
+
+        fun dateFormatter(): SimpleDateFormat {
+            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+            format.timeZone = TimeZone.getTimeZone("0")
+            return format
         }
     }
 }

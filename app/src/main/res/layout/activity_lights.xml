@@ -111,7 +111,7 @@
           android:background="@drawable/corner_radius_rectangle" app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/imageViewMain" android:layout_marginTop="8dp"
-          android:id="@+id/view"/>
+          android:id="@+id/devicesCardView"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -121,7 +121,7 @@
             android:layout_marginEnd="8dp"
             android:textAllCaps="true" android:text="@string/noGroupSelected"
             app:layout_constraintHorizontal_bias="0.506" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toTopOf="@+id/view"/>
+            app:layout_constraintTop_toTopOf="@+id/devicesCardView"/>
     <android.support.constraint.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
                                           android:id="@+id/center"
                                           android:orientation="vertical" app:layout_constraintGuide_percent="0.5"/>
@@ -152,5 +152,5 @@
             android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/center"
             android:layout_marginEnd="8dp" app:layout_constraintHorizontal_bias="0.509" android:layout_marginTop="4dp"/>
 
-    <include layout="@layout/loading_overlay"/>
+    <include layout="@layout/loading_overlay" android:visibility="gone"/>
 </android.support.constraint.ConstraintLayout>

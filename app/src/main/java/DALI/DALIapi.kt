@@ -24,10 +24,6 @@ class DALIapi private constructor () {
         val socketManager: Manager
             get() = Manager(config.serverURL.toURI())
 
-        val requestQueue: RequestQueue by lazy {
-            Volley.newRequestQueue(DALIapi.config.context)
-        }
-
         /**
          * Configure the DALI framework with the given config
          * @param config: The configuration of the framework
