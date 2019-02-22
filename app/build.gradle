@@ -23,8 +23,8 @@ android {
         applicationId "edu.dartmouth.dali.dalilab"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 4
-        versionName "0.5"
+        versionCode 1
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

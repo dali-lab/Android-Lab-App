@@ -88,6 +88,8 @@ class DALIEquipment private constructor(val name: String,
 
         return ServerCommunicator.post(url, JSONAny(obj)).map {
             this.lastCheckOutRecord = DALIEquipmentCheckOutRecord.parse(it)
+
+            this.lastCheckOutRecord!!.retreiveRequirements().join()
             this
         }
     }
@@ -97,6 +99,7 @@ class DALIEquipment private constructor(val name: String,
 
         return ServerCommunicator.post(url, null).map {
             this.lastCheckOutRecord = DALIEquipmentCheckOutRecord.parse(it)
+            this.lastCheckOutRecord!!.retreiveRequirements().join()
             this
         }
     }

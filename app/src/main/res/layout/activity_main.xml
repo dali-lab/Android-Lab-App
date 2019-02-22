@@ -17,11 +17,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main"
-             android:layout_height="wrap_content"
-             android:layout_width="wrap_content" android:id="@+id/include"
-             app:layout_constraintTop_toTopOf="@+id/appBarLayout" app:layout_constraintStart_toStartOf="@+id/guideline"
-             app:layout_constraintEnd_toStartOf="@+id/guideline"/>
     <ImageView
             android:layout_width="0dp"
             android:layout_height="0dp" app:srcCompat="@drawable/background" android:id="@+id/backgroundImageView"
@@ -55,7 +50,8 @@
             app:layout_constraintVertical_bias="0.621"
             app:layout_constraintStart_toStartOf="@+id/guideline4" android:layout_marginStart="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline6" android:layout_marginEnd="8dp"
-            style="@android:style/Widget.Material.Light.Button.Borderless" android:onClick="launchVotingView"/>
+            style="@android:style/Widget.Material.Light.Button.Borderless" android:onClick="launchVotingView"
+            android:visibility="gone"/>
     <ImageView
             android:layout_width="0dp"
             android:layout_height="25dp" app:srcCompat="@drawable/vote"
@@ -64,7 +60,7 @@
             app:layout_constraintEnd_toEndOf="@+id/voteButton"
             app:layout_constraintTop_toTopOf="@+id/voteButton"
             app:layout_constraintBottom_toBottomOf="@+id/voteButton"
-            android:contentDescription="@string/voteImageContentDescription" android:visibility="invisible"/>
+            android:contentDescription="@string/voteImageContentDescription" android:visibility="gone"/>
     <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -164,13 +160,13 @@
             android:text="@string/upcomingEvents"/>
     <android.support.constraint.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
                                           android:id="@+id/guideline"
-                                          android:orientation="vertical" app:layout_constraintGuide_percent="0.5"/>
+                                          android:orientation="vertical" app:layout_constraintGuide_percent="0.63"/>
     <android.support.constraint.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
                                           android:id="@+id/guideline3"
-                                          android:orientation="vertical" app:layout_constraintGuide_percent="0.3"/>
+                                          android:orientation="vertical" app:layout_constraintGuide_percent="0.366"/>
     <android.support.constraint.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
                                           android:id="@+id/guideline4"
-                                          android:orientation="vertical" app:layout_constraintGuide_percent="0.7"/>
+                                          android:orientation="vertical" app:layout_constraintGuide_percent="0.91"/>
     <android.support.constraint.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
                                           android:id="@+id/guideline5"
                                           android:orientation="vertical" app:layout_constraintGuide_percent=".1"/>

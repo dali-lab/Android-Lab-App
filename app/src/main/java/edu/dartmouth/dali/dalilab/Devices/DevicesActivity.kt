@@ -54,9 +54,9 @@ class DevicesActivity : ActionBarActivity(), EquipmentDetailViewCheckOutListener
 
     fun reload() {
         DALIEquipment.getAll().onSuccess {
-            equipment = it
-
             runOnUiThread {
+                equipment = it
+
                 val availableEquipment = it.filter {
                     !it.isCheckedOut
                 }
@@ -76,6 +76,7 @@ class DevicesActivity : ActionBarActivity(), EquipmentDetailViewCheckOutListener
                     this.checkedOutEquipment = null
                 }
                 devicesListView.invalidateViews()
+                devicesListView.invalidate()
             }
         }.onFailure {
             Log.d("DevicesActivity", "Failed! " + it.localizedMessage)
@@ -122,7 +123,8 @@ class DevicesActivity : ActionBarActivity(), EquipmentDetailViewCheckOutListener
     }
 
     override fun returnButtonPressed(equipment: DALIEquipment): CompletableFuture<DALIEquipment> {
-        return equipment.returnEquipment()
+        return equipment.returnEquipment().onSuccess { this.reload() }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -174,7 +176,11 @@ class DevicesActivity : ActionBarActivity(), EquipmentDetailViewCheckOutListener
         }
 
         override fun getItemId(position: Int): Long {
-            return getItem(position).hashCode().toLong()
+            val item = getItem(position)
+            return when (item) {
+                is DALIEquipment -> item.id.hashCode().toLong()
+                else -> item.hashCode().toLong()
+            }
         }
 
         override fun getItem(position: Int): Any {
